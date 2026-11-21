@@ -3,13 +3,4 @@ dist
 dev-dist
 .DS_Store
 *.tsbuildinfo
-
-# Stale SwiftUI duplicate sources (the authoritative iOS project lives in Xcode)
-/Camera/
-/Models/
-/Storage/
-/ViewModels/
-/Views/
-/DartsCounterApp.swift
-/Info.plist
 .claude/settings.local.json

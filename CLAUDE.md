@@ -5,15 +5,12 @@ file covers how to work on the code. See also `AGENTS.md`.
 
 ## What this is
 A React + TypeScript PWA darts scorer (Vite, `vite-plugin-pwa`). Manual numpad input. No
-backend: all data in `localStorage`. Port of the SwiftUI app, whose original docs are in
-`docs/ios/`.
+backend: all data in `localStorage`. Port of the SwiftUI app.
 
 ## Layout
 - This folder (`~/Documents/Claude/DartsCounter`) is the web app and its git repo
   (`origin` = `https://github.com/rentosilvery/Darts.git`, branch `main`).
 - The SwiftUI Xcode project lives separately at `~/Documents/XCODE/DartsCounter/`.
-- Root-level `Camera/ Models/ Storage/ ViewModels/ Views/ DartsCounterApp.swift Info.plist`
-  are a **stale Swift duplicate**, ignored by git. Don't edit them or treat them as current.
 
 ## Commands
 ```bash

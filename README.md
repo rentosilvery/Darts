@@ -5,7 +5,7 @@ It replaces the pen-and-paper scoreboard for a darts night: one phone is passed 
 player enters their 3-dart turn total, and the app tracks remaining scores, checkouts,
 averages and the winner. Saved players build up lifetime stats.
 
-It is a port of the SwiftUI iOS app (spec preserved in [docs/ios/README.md](docs/ios/README.md)).
+It is a port of the earlier SwiftUI iOS app.
 There is **no backend**: everything is stored on the device in `localStorage`, and it works offline.
 
 ---

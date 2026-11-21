@@ -10,9 +10,7 @@ Around the Clock. Formats: single leg, sets & legs, league. Saved players with l
 
 ## Where the code lives
 - Web app: this folder. Git remote `origin` → `github.com/rentosilvery/Darts`, branch `main`.
-- Root-level Swift folders (`Camera/`, `Models/`, `Storage/`, `ViewModels/`, `Views/`) are a
-  stale duplicate of the old iOS app, git-ignored. The live iOS project is in
-  `~/Documents/XCODE/DartsCounter/`. Original iOS docs: `docs/ios/`.
+- The SwiftUI iOS project lives separately in `~/Documents/XCODE/DartsCounter/`.
 
 ## Build / verify
 ```bash
