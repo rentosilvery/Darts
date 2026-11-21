@@ -83,6 +83,22 @@ describe('x01', () => {
     expect(s.state.currentPlayerIndex).toBe(0)
   })
 
+  it('logs every turn in throw order and clears it each leg', () => {
+    let s = start(cfg({ mode: { kind: 'x01', start: 301 }, legsToWinSet: 2 }))
+    s = play(s, 60, 45)
+    s = bust(s)
+    expect(s.state.log).toEqual([
+      { player: 0, scoreBefore: 301, scored: 60, bust: false },
+      { player: 1, scoreBefore: 301, scored: 45, bust: false },
+      { player: 0, scoreBefore: 241, scored: 0, bust: true },
+    ])
+    s = undo(s)
+    expect(s.state.log).toHaveLength(2)
+    s = play(s, 180, 0, 61) // Ana checks out
+    expect(s.prompt?.type).toBe('legWon')
+    expect(s.state.log).toEqual([])
+  })
+
   it('bust key records a bust round', () => {
     const s = bust(start(cfg()))
     expect(s.state.players[0].roundHistory[0]).toEqual({ scoreBefore: 501, scored: 0, bust: true })

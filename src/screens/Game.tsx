@@ -63,6 +63,19 @@ export function Game(props: { session: Session; update: Update; onExit: () => vo
   }
 
   const hint = x01 && cur.score <= 170 ? checkoutHint(cur.score) : null
+  const log = st.log ?? []
+  const lastTurns = log.slice(-2).reverse()
+  const anySaved = st.players.some((p) => p.profileId)
+  const undoButton = (
+    <button
+      className="undo-btn"
+      aria-label="Undo last turn"
+      disabled={session.history.length === 0}
+      onClick={() => { update(undo); setDigits('') }}
+    >
+      <IconUndo />
+    </button>
+  )
 
   return (
     <main className="screen">
@@ -109,23 +122,28 @@ export function Game(props: { session: Session; update: Update; onExit: () => vo
         <SideColumn player={next} role="Next" show={n >= 2} st={st} index={(st.currentPlayerIndex + 1) % n} />
       </section>
 
-      <section className="rounds" aria-label={`${cur.name}'s turns this leg`}>
-        {cur.roundHistory.length === 0 ? (
-          <div className="empty">{x01 ? 'No turns yet this leg' : 'No turns yet'}</div>
+      <section className="feed" aria-label="Last turns">
+        {lastTurns.length === 0 ? (
+          <div className="feed-empty">{x01 ? 'No turns yet this leg' : 'No turns yet'}</div>
         ) : (
-          [...cur.roundHistory].reverse().slice(0, 12).map((r, i) => {
-            const no = cur.roundHistory.length - i
-            return x01 ? (
-              <div className="round num" key={no}>
-                <span className={`pts${r.bust ? ' bust' : ''}`}>{r.bust ? 'Bust' : r.scored}</span>
-                <span className="path">{r.scoreBefore} → <b>{r.bust ? r.scoreBefore : r.scoreBefore - r.scored}</b></span>
-                <span className="n">Turn {no}</span>
-              </div>
-            ) : (
-              <div className="round num" key={no}>
-                <span className="pts">{r.scored}</span>
-                <span className="path">{r.scored === 1 ? 'hit' : 'hits'}, {r.scoreBefore} → <b>{Math.min(r.scoreBefore + r.scored, 21) > 20 ? 'done' : r.scoreBefore + r.scored}</b></span>
-                <span className="n">Turn {no}</span>
+          lastTurns.map((t, i) => {
+            const p = st.players[t.player]
+            const after = x01
+              ? t.bust ? t.scoreBefore : t.scoreBefore - t.scored
+              : Math.min(t.scoreBefore + t.scored, 21)
+            return (
+              <div className={`feed-row num${i === 0 ? ' latest' : ''}`} key={log.length - i}>
+                <span className="who">
+                  <ProfileDot profileId={p.profileId} placeholder={anySaved} />
+                  <span>{p.name}</span>
+                </span>
+                <span className={`pts${t.bust ? ' bust' : ''}`}>
+                  {t.bust ? 'Bust' : t.scored}
+                  {!x01 && <small>{t.scored === 1 ? ' hit' : ' hits'}</small>}
+                </span>
+                <span className="path">
+                  {t.scoreBefore} → <b>{!x01 && after > 20 ? 'done' : after}</b>
+                </span>
               </div>
             )
           })
@@ -136,8 +154,9 @@ export function Game(props: { session: Session; update: Update; onExit: () => vo
         <>
           <div className="entry">
             <div className={`value num${digits === '' ? ' placeholder' : ''}${value !== null && !valid ? ' invalid' : ''}`} aria-live="polite">
-              {digits === '' ? 'Enter the turn total' : digits}
+              {digits === '' ? 'Turn total' : digits}
             </div>
+            {undoButton}
             <button className="enter" disabled={!valid} onClick={enter}>
               <IconCheck /> Enter
             </button>
@@ -154,8 +173,9 @@ export function Game(props: { session: Session; update: Update; onExit: () => vo
         </>
       ) : (
         <>
-          <div className="pad-hint" style={{ paddingTop: 12, borderTop: '1px solid var(--line)' }}>
-            How many darts hit <b>{cur.currentTarget}</b>?
+          <div className="entry">
+            <div className="atc-q">How many darts hit <b>{cur.currentTarget}</b>?</div>
+            {undoButton}
           </div>
           <div className="pad atc">
             {[0, 1, 2, 3].map((h) => (
@@ -165,11 +185,6 @@ export function Game(props: { session: Session; update: Update; onExit: () => vo
         </>
       )}
 
-      <footer className="gamebar">
-        <button className="pill-btn" disabled={session.history.length === 0} onClick={() => { update(undo); setDigits('') }}>
-          <IconUndo /> Undo
-        </button>
-      </footer>
 
       {/* ---------- prompts ---------- */}
 

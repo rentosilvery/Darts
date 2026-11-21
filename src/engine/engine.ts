@@ -66,6 +66,7 @@ function advancePlayer(s: GameState) {
 function recordTurn(s: GameState, idx: number, scoreBefore: number, scored: number) {
   const p = s.players[idx]
   p.roundHistory.push({ scoreBefore, scored, bust: false })
+  s.log.push({ player: idx, scoreBefore, scored, bust: false })
   p.totalRoundsPlayed++
   p.totalScoredAllLegs += scored
   if (scored >= 100) p.count100Plus++
@@ -77,6 +78,7 @@ function recordTurn(s: GameState, idx: number, scoreBefore: number, scored: numb
 function recordBust(s: GameState, idx: number) {
   const p = s.players[idx]
   p.roundHistory.push({ scoreBefore: p.score, scored: 0, bust: true })
+  s.log.push({ player: idx, scoreBefore: p.score, scored: 0, bust: true })
   p.totalRoundsPlayed++
   p.bustCount++
 }
@@ -91,6 +93,7 @@ function resetLeg(s: GameState) {
   s.playerOpened = fill(n, !s.doubleIn)
   s.playerFinishedThisLeg = fill(n, false)
   s.legFinishOrder = []
+  s.log = []
 }
 
 // ---------------------------------------------------------------------------
@@ -116,6 +119,7 @@ export function createSession(
     playerLeaguePoints: fill(n, 0),
     playerFinishedThisLeg: fill(n, false),
     legFinishOrder: [],
+    log: [],
   }
   return {
     state,
@@ -173,6 +177,7 @@ export function submitScore(sess: Session, total: number): Session {
     const st = next.state
     const p = st.players[st.currentPlayerIndex]
     p.roundHistory.push({ scoreBefore: p.currentTarget, scored: total, bust: false })
+    st.log.push({ player: st.currentPlayerIndex, scoreBefore: p.currentTarget, scored: total, bust: false })
     p.totalRoundsPlayed++
     p.currentTarget = Math.min(p.currentTarget + total, 21)
     if (p.currentTarget > 20) {

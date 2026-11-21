@@ -11,6 +11,16 @@ Around the Clock. Formats: single leg, sets & legs, league. Saved players with l
 ## Where the code lives
 - Web app: this folder. Git remote `origin` → `github.com/rentosilvery/Darts`, branch `main`.
 - The SwiftUI iOS project lives separately in `~/Documents/XCODE/DartsCounter/`.
+- Live app: https://rentosilvery.github.io/Darts/ (GitHub Pages).
+
+## Deployment
+- `.github/workflows/deploy.yml` tests, builds and publishes on every push to `main`;
+  it's live in about a minute. **A push to `main` is a release to all users.**
+- It can also be started by hand: GitHub → Actions → Deploy to GitHub Pages → Run workflow.
+- The app is served under `/Darts/` (`BASE_PATH` env → Vite `base`). No asset paths with a
+  leading `/`; use relative paths or `import.meta.env.BASE_URL`.
+- Users' data lives only in their phones' `localStorage` (`darts.*.v1` keys). Schema changes
+  must migrate existing data, never wipe it.
 
 ## Build / verify
 ```bash

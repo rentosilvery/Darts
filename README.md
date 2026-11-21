@@ -8,16 +8,26 @@ averages and the winner. Saved players build up lifetime stats.
 It is a port of the earlier SwiftUI iOS app.
 There is **no backend**: everything is stored on the device in `localStorage`, and it works offline.
 
+**Live app: https://rentosilvery.github.io/Darts/**
+
 ---
 
 ## Install on a phone
 
-1. Open the deployed URL (GitHub Pages: `https://rentosilvery.github.io/Darts/`).
-2. **iPhone (Safari):** Share → *Add to Home Screen*. **Android (Chrome):** menu → *Install app*.
-3. Launch it from the home-screen icon. It opens full-screen and works without a connection.
+- **iPhone:** open the link in **Safari** (Chrome on iOS can't install web apps), tap
+  **Share** → **Add to Home Screen** → **Add**.
+- **Android:** open the link in **Chrome**, menu **⋮** → **Install app** (or *Add to Home screen*).
+- **Computer:** just open the link; Chrome and Edge also offer an install icon in the address bar.
 
-Each phone keeps its own players and stats. Use **Players → Save backup / Restore backup**
-to move them to another phone.
+Open it from the home-screen icon from then on: it runs full-screen and works with no connection.
+
+Good to know:
+- **Data is per device.** Players and stats live only on that phone. On iPhone the
+  home-screen app and Safari tabs have **separate** storage, so always use the icon.
+- **Moving to a new phone:** **Players → Save backup** on the old one, **Restore backup** on the new one.
+- **Updates are automatic.** A push to `main` is live in about a minute; an installed app picks it up
+  the next time it's fully closed and reopened.
+- **Sharing:** send friends the same link; each person's data stays on their own phone.
 
 ---
 
@@ -68,8 +78,10 @@ First past 20 wins. Casual mode: **not recorded** in lifetime stats.
 
 ## Controls
 
-Numpad + **Enter** for the turn total, **BUST**, **Undo** (full history), **Scores** (all
-players), **End** (abandon, records nothing). On a computer the keyboard works too
+Numpad + **Enter** for the turn total, **BUST**, **Undo** (the arrow beside Enter; full
+history), **Scores** (all players), **End** (abandon, records nothing). Under the current
+player, the last two turns of the leg are listed (who threw, what they scored, before → after),
+so the score of whoever just threw stays visible. On a computer the keyboard works too
 (digits, Backspace, Enter). The screen stays awake during a game where the browser allows it.
 
 ---
@@ -102,9 +114,23 @@ npm run preview    # serve the production build
 Test on a phone on the same Wi-Fi with `npm run dev -- --host`, then open the printed
 network URL.
 
-### Deploying
-`.github/workflows/deploy.yml` builds and publishes to GitHub Pages on every push to `main`.
-One-time setup: repository **Settings → Pages → Source: GitHub Actions**.
+### Deploying (GitHub Pages)
+The app is hosted free on GitHub Pages at https://rentosilvery.github.io/Darts/.
+
+- `.github/workflows/deploy.yml` runs on **every push to `main`**: install → `npm test` →
+  `npm run build` → publish `dist/`. **Pushing to `main` is a release**; it reaches everyone's
+  phones.
+- **Run it by hand:** GitHub → **Actions** → **Deploy to GitHub Pages** → **Run workflow** →
+  branch `main` → **Run workflow**. A green tick on both *build* and *deploy* means it's live.
+- **If a run fails:** open the failed step to read the error. "Pages not enabled" means
+  **Settings → Pages → Source** must be **GitHub Actions** (already set). A billing or visibility
+  error means the repo was made private on a free plan; Pages needs it public.
+- **Base path:** Pages serves the app under `/Darts/`. The workflow sets `BASE_PATH=/Darts/`
+  (from the repo name) and `vite.config.ts` uses it for `base`, the manifest `start_url` and
+  `scope`. Locally it defaults to `/`. Reference anything in `public/` with a relative path or
+  `import.meta.env.BASE_URL`, never a leading `/`.
+- To check a production build locally with the same path:
+  `BASE_PATH=/Darts/ npm run build && npm run preview`.
 
 ### Structure
 
@@ -124,7 +150,7 @@ src/
 ├─ components/           Sheet, Dialog, Toast, controls, icons
 └─ screens/
    ├─ Setup.tsx          Mode, rules, format, players
-   ├─ Game.tsx           Live scoring: 3-column header, turns, keypad, prompts
+   ├─ Game.tsx           Live scoring: 3-column header, last two turns, keypad, prompts
    ├─ Results.tsx        Winner and league-final screens
    ├─ Players.tsx        Roster, editor, slot picker, backup
    └─ History.tsx        Leaderboard table

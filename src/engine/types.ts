@@ -58,6 +58,13 @@ export interface GameState extends GameConfig {
   playerLeaguePoints: number[]
   playerFinishedThisLeg: boolean[]
   legFinishOrder: number[]
+  /** every turn of the current leg, all players, in throw order */
+  log: TurnLogEntry[]
+}
+
+export interface TurnLogEntry extends RoundEntry {
+  /** index into players */
+  player: number
 }
 
 export interface LeagueLegResult {
