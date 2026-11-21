@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { IconChevron, IconPlus } from '../components/Icons'
 import { Dialog, Sheet, StatGrid, fmt1 } from '../components/ui'
 import {
-  PALETTE, blankProfile, lifetimeAverage, profileStore, useProfiles, type PlayerProfile,
+  blankProfile, lifetimeAverage, profileStore, useProfiles, type PlayerProfile,
 } from '../store/profiles'
 
 /** Roster of saved players. */
@@ -15,7 +15,7 @@ export function PlayersSheet({ onClose }: { onClose: () => void }) {
 
   const startNew = () => {
     setIsNew(true)
-    setEditing(blankProfile('', profiles.length % PALETTE.length))
+    setEditing(blankProfile(''))
   }
 
   const exportBackup = () => {
@@ -61,7 +61,6 @@ export function PlayersSheet({ onClose }: { onClose: () => void }) {
           <div className="panel">
             {profiles.map((p) => (
               <button key={p.id} className="row" onClick={() => { setIsNew(false); setEditing(p) }}>
-                <span className="dot lg" style={{ background: PALETTE[p.colorIndex % PALETTE.length] }} />
                 <span className="grow">
                   <span className="label">{p.name}</span>
                   <span className="sub" style={{ display: 'block' }}>
@@ -161,21 +160,6 @@ function PlayerEditor(props: {
           />
         </div>
 
-        <div className="group">
-          <h2>Colour</h2>
-          <div className="colors">
-            {PALETTE.map((c, i) => (
-              <button
-                key={c}
-                style={{ background: c }}
-                aria-label={`Colour ${i + 1}`}
-                aria-pressed={p.colorIndex === i}
-                onClick={() => setP({ ...p, colorIndex: i })}
-              />
-            ))}
-          </div>
-        </div>
-
         {!props.isNew && (
           <div className="group">
             <h2>Lifetime, 301 and 501</h2>
@@ -252,7 +236,6 @@ export function PlayerPicker(props: {
                 aria-pressed={p.id === props.currentProfileId}
                 onClick={() => props.onPick(p.name, p.id)}
               >
-                <span className="dot" style={{ background: PALETTE[p.colorIndex % PALETTE.length] }} />
                 <span className="grow">{p.name}</span>
                 {taken && <span className="sub">Already playing</span>}
               </button>

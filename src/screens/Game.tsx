@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { BoardArt, IconBack, IconCheck, IconPeople, IconUndo } from '../components/Icons'
-import { Dialog, ProfileDot, Sheet, Toast, fmt1 } from '../components/ui'
+import { Dialog, Sheet, Toast, fmt1 } from '../components/ui'
 import { checkoutHint, isPossibleTurn } from '../engine/checkout'
 import {
   answerDoubleIn, answerDoubleOut, bust, chooseStarter, clearFlash, legAverage, nextLeagueGame,
@@ -20,6 +20,14 @@ export function Game(props: { session: Session; update: Update; onExit: () => vo
   const [showScores, setShowScores] = useState(false)
 
   useWakeLock()
+
+  // The turns list shows two rows; keep it scrolled to the newest so older ones are a scroll up.
+  const turnsRef = useRef<HTMLDivElement>(null)
+  const curPlayer = st.players[st.currentPlayerIndex]
+  useLayoutEffect(() => {
+    const el = turnsRef.current
+    if (el) el.scrollTop = el.scrollHeight
+  }, [curPlayer.id, curPlayer.roundHistory.length])
 
   const n = st.players.length
   const cur = st.players[st.currentPlayerIndex]
@@ -63,9 +71,7 @@ export function Game(props: { session: Session; update: Update; onExit: () => vo
   }
 
   const hint = x01 && cur.score <= 170 ? checkoutHint(cur.score) : null
-  const log = st.log ?? []
-  const lastTurns = log.slice(-2).reverse()
-  const anySaved = st.players.some((p) => p.profileId)
+  const turns = cur.roundHistory
   const undoButton = (
     <button
       className="undo-btn"
@@ -92,7 +98,6 @@ export function Game(props: { session: Session; update: Update; onExit: () => vo
         <SideColumn player={prev} role="Previous" show={n >= 3} st={st} index={(st.currentPlayerIndex - 1 + n) % n} />
         <div className="current">
           <div className="name">
-            <ProfileDot profileId={cur.profileId} />
             <span>{cur.name}</span>
           </div>
           {x01 ? (
@@ -122,31 +127,29 @@ export function Game(props: { session: Session; update: Update; onExit: () => vo
         <SideColumn player={next} role="Next" show={n >= 2} st={st} index={(st.currentPlayerIndex + 1) % n} />
       </section>
 
-      <section className="feed" aria-label="Last turns">
-        {lastTurns.length === 0 ? (
-          <div className="feed-empty">{x01 ? 'No turns yet this leg' : 'No turns yet'}</div>
+      <section className="feed" aria-label={`${cur.name}'s turns this leg`}>
+        {turns.length === 0 ? (
+          <div className="feed-empty">{x01 ? `No turns yet for ${cur.name} this leg` : 'No turns yet'}</div>
         ) : (
-          lastTurns.map((t, i) => {
-            const p = st.players[t.player]
-            const after = x01
-              ? t.bust ? t.scoreBefore : t.scoreBefore - t.scored
-              : Math.min(t.scoreBefore + t.scored, 21)
-            return (
-              <div className={`feed-row num${i === 0 ? ' latest' : ''}`} key={log.length - i}>
-                <span className="who">
-                  <ProfileDot profileId={p.profileId} placeholder={anySaved} />
-                  <span>{p.name}</span>
-                </span>
-                <span className={`pts${t.bust ? ' bust' : ''}`}>
-                  {t.bust ? 'Bust' : t.scored}
-                  {!x01 && <small>{t.scored === 1 ? ' hit' : ' hits'}</small>}
-                </span>
-                <span className="path">
-                  {t.scoreBefore} → <b>{!x01 && after > 20 ? 'done' : after}</b>
-                </span>
-              </div>
-            )
-          })
+          <div className="turns" ref={turnsRef} tabIndex={0}>
+            {turns.map((t, i) => {
+              const after = x01
+                ? t.bust ? t.scoreBefore : t.scoreBefore - t.scored
+                : Math.min(t.scoreBefore + t.scored, 21)
+              return (
+                <div className={`feed-row num${i === turns.length - 1 ? ' latest' : ''}`} key={i}>
+                  <span className="who">Turn {i + 1}</span>
+                  <span className={`pts${t.bust ? ' bust' : ''}`}>
+                    {t.bust ? 'Bust' : t.scored}
+                    {!x01 && <small>{t.scored === 1 ? ' hit' : ' hits'}</small>}
+                  </span>
+                  <span className="path">
+                    {t.scoreBefore} → <b>{!x01 && after > 20 ? 'done' : after}</b>
+                  </span>
+                </div>
+              )
+            })}
+          </div>
         )}
       </section>
 
@@ -282,7 +285,6 @@ function SideColumn({ player, role, show, st, index }: { player: Player; role: s
     <div className="side">
       <div className="role">{role}</div>
       <div className="name">
-        <ProfileDot profileId={player.profileId} />
         <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{player.name}</span>
       </div>
       <div className="val num">{st.mode.kind === 'x01' ? player.score : player.currentTarget > 20 ? 'Done' : player.currentTarget}</div>
@@ -319,7 +321,6 @@ function StarterSheet(props: {
         <div className="panel">
           {props.players.map((p, i) => (
             <button key={p.id} className="choice" aria-pressed={sel === i} onClick={() => setSel(i)}>
-              <ProfileDot profileId={p.profileId} placeholder />
               <span className="grow">{p.name}</span>
               {sel === i && <IconCheck className="tick" />}
             </button>
@@ -340,7 +341,6 @@ function ScoresSheet({ st, onClose }: { st: GameState; onClose: () => void }) {
           const isCur = i === st.currentPlayerIndex
           return (
             <div key={p.id} className="row" style={isCur ? { background: 'var(--gold-soft)' } : undefined}>
-              <ProfileDot profileId={p.profileId} placeholder />
               <span className="grow">
                 <span className="label">{p.name}</span>
                 <span className="sub" style={{ display: 'block' }}>

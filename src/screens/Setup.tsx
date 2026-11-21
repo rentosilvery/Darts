@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { IconChart, IconChevron, IconClose, IconPeople, IconPlus } from '../components/Icons'
-import { ProfileDot, Segmented, StepperRow, SwitchRow } from '../components/ui'
+import { Segmented, StepperRow, SwitchRow } from '../components/ui'
 import type { GameConfig } from '../engine/types'
 import { getProfile, useProfiles } from '../store/profiles'
 import { KEYS, readJSON, writeJSON } from '../store/storage'
@@ -149,7 +149,6 @@ export function Setup({ onStart }: { onStart: (players: Slot[], cfg: GameConfig)
                     onClick={() => setPicking(i)}
                   >
                     <span className="slot-index num">{i + 1}</span>
-                    <ProfileDot profileId={s.profileId} placeholder />
                     <span className="grow" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {name ? (
                         <>

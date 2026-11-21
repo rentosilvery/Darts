@@ -1,7 +1,6 @@
 import { useEffect, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { IconClose, IconMinus, IconPlus } from './Icons'
-import { getProfile, profileColor } from '../store/profiles'
 
 // ---------------------------------------------------------------------------
 // Overlays
@@ -144,13 +143,6 @@ export function StepperRow(props: {
       </div>
     </div>
   )
-}
-
-/** Colour dot for a saved profile; nothing for a guest unless `placeholder`. */
-export function ProfileDot({ profileId, large, placeholder }: { profileId?: string; large?: boolean; placeholder?: boolean }) {
-  const color = profileColor(getProfile(profileId))
-  if (!color) return placeholder ? <span className={`dot empty${large ? ' lg' : ''}`} /> : null
-  return <span className={`dot${large ? ' lg' : ''}`} style={{ background: color }} />
 }
 
 export function StatGrid({ items }: { items: [string, string | number][] }) {

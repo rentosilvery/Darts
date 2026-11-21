@@ -32,7 +32,7 @@ browser at phone size (390×844).
   single `session.prompt`; short notices (bust, player finished) are `session.flash`.
 - Lifetime stats are written once in `App.tsx` when `state.isGameOver && !recorded`.
 - Styling: tokens in `src/styles.css` `:root` (`--ink*`, `--cream*`, `--gold`, `--red`,
-  `--green`, `--display`, `--text`). No raw colours in components except the profile palette.
+  `--green`, `--display`, `--text`). No raw colours in components. Players have no colours, by design.
   Dark only. Display type is Big Shoulders Display; UI type is Instrument Sans (bundled via
   `@fontsource`, so offline works).
 - Copy is sentence case, plain verbs, no all-caps labels (BUST key is the one exception).

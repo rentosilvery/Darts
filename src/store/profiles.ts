@@ -6,7 +6,6 @@ import { KEYS, readJSON, writeJSON } from './storage'
 export interface PlayerProfile {
   id: string
   name: string
-  colorIndex: number
   gamesPlayed: number
   gamesWon: number
   totalRounds: number
@@ -20,28 +19,11 @@ export interface PlayerProfile {
   lastPlayed: string | null
 }
 
-export const PALETTE = [
-  '#F29A38', // orange
-  '#E5483B', // red
-  '#E86A9A', // pink
-  '#9B6BDB', // purple
-  '#5C6BE0', // indigo
-  '#3D8FE6', // blue
-  '#2BB3AE', // teal
-  '#3FB062', // green
-  '#8FD9B6', // mint
-  '#F0C456', // yellow
-]
-
-export const profileColor = (p?: PlayerProfile | null) =>
-  p ? PALETTE[((p.colorIndex % PALETTE.length) + PALETTE.length) % PALETTE.length] : undefined
-
 export const lifetimeAverage = (p: PlayerProfile) => (p.totalRounds > 0 ? p.totalScored / p.totalRounds : 0)
 
-export const blankProfile = (name: string, colorIndex: number): PlayerProfile => ({
+export const blankProfile = (name: string): PlayerProfile => ({
   id: crypto.randomUUID(),
   name,
-  colorIndex,
   gamesPlayed: 0,
   gamesWon: 0,
   totalRounds: 0,
@@ -123,7 +105,7 @@ export const profileStore = {
       (p): p is PlayerProfile => p && typeof p.id === 'string' && typeof p.name === 'string',
     )
     const merged = new Map(profiles.map((p) => [p.id, p]))
-    for (const p of valid) merged.set(p.id, { ...blankProfile(p.name, 0), ...p })
+    for (const p of valid) merged.set(p.id, { ...blankProfile(p.name), ...p })
     commit([...merged.values()])
     return valid.length
   },

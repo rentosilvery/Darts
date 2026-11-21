@@ -69,19 +69,21 @@ First past 20 wins. Casual mode: **not recorded** in lifetime stats.
 | Best turn | Highest single-turn score |
 
 ### Saved players and lifetime stats
-- A saved player has a name and a colour (10-colour palette).
+- A saved player is just a name (no colours or avatars).
 - In setup, each slot is a saved player or a guest (guests aren't recorded).
 - Lifetime stats count **301 and 501 only**. A whole match or league = **one** game played;
   only the overall winner gets a win. **Ending a game early records nothing.**
-- The **Leaderboard** ranks saved players by lifetime average with Games, Wins, Avg, Best,
-  100+, 60+, 40+ and Busts. The name column stays put while the stats scroll sideways.
+- The **Leaderboard** ranks saved players by **win percentage** (wins ÷ games), then by lifetime
+  average as the tie-break; players with no games yet go last. Columns: Win %, Avg, Games, Wins,
+  Best, 100+, 60+, 40+, Busts. The name column stays put while the stats scroll sideways.
 
 ## Controls
 
 Numpad + **Enter** for the turn total, **BUST**, **Undo** (the arrow beside Enter; full
 history), **Scores** (all players), **End** (abandon, records nothing). Under the current
-player, the last two turns of the leg are listed (who threw, what they scored, before → after),
-so the score of whoever just threw stays visible. On a computer the keyboard works too
+player, their turns this leg are listed (turn number, score, before → after). Two rows show at
+a time, newest at the bottom; scroll up for earlier turns. It jumps back to the newest turn
+whenever the next player is up. On a computer the keyboard works too
 (digits, Backspace, Enter). The screen stays awake during a game where the browser allows it.
 
 ---
@@ -150,7 +152,7 @@ src/
 ├─ components/           Sheet, Dialog, Toast, controls, icons
 └─ screens/
    ├─ Setup.tsx          Mode, rules, format, players
-   ├─ Game.tsx           Live scoring: 3-column header, last two turns, keypad, prompts
+   ├─ Game.tsx           Live scoring: 3-column header, scrollable turns, keypad, prompts
    ├─ Results.tsx        Winner and league-final screens
    ├─ Players.tsx        Roster, editor, slot picker, backup
    └─ History.tsx        Leaderboard table

@@ -1,4 +1,4 @@
-import { ProfileDot, StatGrid, fmt1 } from '../components/ui'
+import { StatGrid, fmt1 } from '../components/ui'
 import { overallAverage } from '../engine/engine'
 import type { Session } from '../engine/types'
 
@@ -28,7 +28,6 @@ export function Results({ session, onRematch, onNew }: { session: Session; onRem
             <article key={r.id} className={`result-card${r.rank === 1 ? ' first' : ''}`}>
               <header>
                 <span className="rank num">{r.rank}</span>
-                <ProfileDot profileId={r.profileId} />
                 <span className="grow">{r.name}</span>
                 <span className="pts num">{r.totalPoints} pts</span>
               </header>
@@ -76,7 +75,6 @@ export function Results({ session, onRematch, onNew }: { session: Session; onRem
         {ordered.map(({ p, i }) => (
           <article key={p.id} className={`result-card${i === st.winnerIndex ? ' first' : ''}`}>
             <header>
-              <ProfileDot profileId={p.profileId} />
               <span className="grow">{p.name}</span>
               {multi && x01 && <span className="sub num" style={{ color: 'var(--cream-2)' }}>{scoreline(i)}</span>}
               {!x01 && <span className="sub num" style={{ color: 'var(--cream-2)' }}>{p.currentTarget > 20 ? 'Finished' : `On ${p.currentTarget}`}</span>}
