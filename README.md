@@ -10,6 +10,8 @@ There is **no backend**: everything is stored on the device in `localStorage`, a
 
 **Live app: https://rentosilvery.github.io/Darts/**
 
+Created by **Poda Tech**.
+
 ---
 
 ## Install on a phone

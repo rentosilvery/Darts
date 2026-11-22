@@ -183,6 +183,8 @@ export function Setup({ onStart }: { onStart: (players: Slot[], cfg: GameConfig)
             )}
           </div>
         </section>
+
+        <p className="credit">Created by <b>Poda Tech</b></p>
       </div>
 
       <div className="dock">

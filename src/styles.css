@@ -214,6 +214,15 @@ button:disabled { cursor: default; }
 
 .slot-index { width: 20px; color: var(--cream-3); font-family: var(--display); font-weight: 700; font-size: 18px; }
 
+.credit {
+  margin: 36px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--cream-3);
+  letter-spacing: 0.01em;
+}
+.credit b { color: var(--cream-2); font-weight: 700; }
+
 .dock {
   position: absolute;
   left: 0;
